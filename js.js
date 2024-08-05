@@ -18,8 +18,9 @@ function addToCart() {
   let title = parent.querySelector(".shop-item-title").textContent;
   let image = parent.querySelector(".shop-item-image").src;
   let price = parent.querySelector(".shop-item-price").textContent;
+
   renderCard(image, price, title);
-  updateTotal();
+  updateTotal(); // Ažurirajte total odmah nakon dodavanja
 }
 
 function renderCard(image, price, title) {
@@ -33,6 +34,7 @@ function renderCard(image, price, title) {
       let parent = titleContainer[i].parentElement.parentElement;
       parent.querySelector(".cart-quantity-input").value =
         parseInt(parent.querySelector(".cart-quantity-input").value) + 1;
+      updateTotal(); // Ažurirajte total ovde kad se poveća količina
       return;
     }
   }
@@ -46,18 +48,19 @@ function renderCard(image, price, title) {
     <input type="number" min="1" max="10" value="1" class="cart-quantity-input" />
     <button class="btn btn-danger">Delete</button>
   </div>`;
+
   row.innerHTML = output;
   container.appendChild(row);
-  row.querySelector(".btn-danger").addEventListener("click", deleteItem);
-  document.querySelector(".cart-quantity-input").addEventListener(() => {
 
-  })
+  // Dodajte događaj za praćenje promene količine
+  row.querySelector(".btn-danger").addEventListener("click", deleteItem);
+  row.querySelector(".cart-quantity-input").addEventListener("input", updateTotal);
 }
 
 function deleteItem() {
   let element = this.parentElement.parentElement;
   element.remove();
-  updateTotal();
+  updateTotal(); // Ažurirajte total nakon brisanja
 }
 
 function updateTotal() {
@@ -68,7 +71,7 @@ function updateTotal() {
   rows.forEach((elem) => {
     let price = elem.querySelector(".cart-price").textContent.substring(1);
     let quantity = elem.querySelector(".cart-quantity-input").value;
-    sum = sum + quantity * price;
-    total.textContent = "€" + sum.toFixed(2);
+    sum += quantity * price;
   });
+  total.textContent = "€" + sum.toFixed(2); // Ažurirajte ukupnu cenu
 }
